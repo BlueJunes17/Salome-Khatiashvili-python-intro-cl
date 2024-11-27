@@ -1,0 +1,13 @@
+{
+    "max_purchase_users_by_quantity": [
+        "sam_jones"
+    ],
+    "max_purchase_users_by_value": [
+        "peter_black"
+    ],
+    "avg_purchase_value": 10.916666666666666,
+    "avg_purchase_quantity": 3.0,
+    "most_sold_products": [
+        "orange"
+    ]
+}
