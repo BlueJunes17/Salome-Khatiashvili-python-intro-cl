@@ -1,0 +1,55 @@
+
+class DatabaseConnection:
+    def __enter__(self):
+        print("Opening database connection...")
+        return self  
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type:
+            print(f"An error occurred: {exc_value}")
+        print("Closing database connection...")
+
+class Transaction:
+    def __init__(self, database):
+        self.database = database
+        self.backup = None
+
+    def __enter__(self):
+        self.backup = self.database.copy()
+        print("Transaction started.")
+        return self.database
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type is not None:
+            print(f"Error occurred: {exc_value}. Rolling back changes.")
+            self.database.clear()
+            self.database.update(self.backup)
+        else:
+            print("Transaction completed successfully. Committing changes.")
+        print("Transaction ended.")
+
+
+database = {}
+
+
+try:
+    with DatabaseConnection():
+        with Transaction(database) as db:
+            db["user1"] = "Alice"
+            db["user2"] = "Bob"
+            print("Before error:", db)
+            raise ValueError("Something went wrong!")
+            db["user3"] = "Charlie"  
+except ValueError:
+    pass
+
+print("After rollback:", database)
+
+with DatabaseConnection():
+    with Transaction(database) as db:
+        db["user3"] = "Charlie"
+        print("Final state before commit:", db)
+
+print("Final database state:", database)
+
+#ცოტა ვერ გავიგე აქ რა უნდა მექნა და მიშას მოწერილი გამოვიყენე უბრალოდ :დ
